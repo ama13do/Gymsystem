@@ -1,12 +1,51 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gymsystem/views/chat/chatSelector.dart';
 import 'package:gymsystem/views/marketplace/marketplacescreen.dart';
 import 'package:gymsystem/views/profile/profile.dart';
 import 'package:gymsystem/views/routines/routines_screen.dart';
-import 'package:gymsystem/views/auth/login.dart'; // Importa la pantalla de inicio de sesión
+import 'package:gymsystem/views/auth/login.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final List<String> _tips = [
+    'Calienta antes de entrenar para evitar lesiones.',
+    'Mantente hidratado durante el ejercicio.',
+    'Concéntrate en la forma adecuada para mejores resultados.',
+    'La consistencia es clave para progresar.',
+    'Descansa lo suficiente para una recuperación óptima.',
+    'Sigue una dieta balanceada para maximizar tu rendimiento.',
+    'Escucha a tu cuerpo para evitar lesiones.',
+    'Incluye variedad en tus rutinas para evitar la monotonía.',
+  ];
+  int _currentTipIndex = 0;
+  late Timer _tipTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTipRotation();
+  }
+
+  void _startTipRotation() {
+    _tipTimer = Timer.periodic(Duration(seconds: 10), (timer) {
+      setState(() {
+        _currentTipIndex = (_currentTipIndex + 1) % _tips.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _tipTimer.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 600;
@@ -19,14 +58,11 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () async {
-              // Cierra sesión
               await FirebaseAuth.instance.signOut();
-
-              // Navega a la pantalla de inicio de sesión
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => LoginScreen()),
-                (route) => false, // Elimina todas las rutas anteriores
+                (route) => false,
               );
             },
             tooltip: 'Cerrar sesión',
@@ -60,6 +96,12 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       _buildHomeButton(context, Icons.chat, 'Chats'),
                       _buildHomeButton(context, Icons.fitness_center, 'Rutinas'),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
                       _buildHomeButton(context, Icons.shopping_cart, 'Marketplace'),
                       _buildHomeButton(context, Icons.person, 'Perfil'),
                     ],
@@ -77,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Gym Tips',
+                            'Tip Actual',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -86,16 +128,18 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 10),
                           Text(
-                            '1. Calienta antes de entrenar para evitar lesiones.\n'
-                            '2. Mantente hidratado durante el ejercicio.\n'
-                            '3. Concéntrate en la forma adecuada para mejores resultados.\n'
-                            '4. ¡La consistencia es clave para progresar!',
+                            _tips[_currentTipIndex],
                             style: TextStyle(fontSize: 16, color: Colors.black87),
                           ),
                           SizedBox(height: 10),
                           TextButton(
                             onPressed: () {
-                              // Acción para más tips
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TipListScreen(tips: _tips),
+                                ),
+                              );
                             },
                             child: Text(
                               'Ver más tips',
@@ -118,7 +162,6 @@ class HomeScreen extends StatelessWidget {
   Widget _buildHomeButton(BuildContext context, IconData icon, String label) {
     return ElevatedButton(
       onPressed: () {
-        // Acción según el botón
         if (label == 'Chats') {
           Navigator.push(
             context,
@@ -137,7 +180,9 @@ class HomeScreen extends StatelessWidget {
         } else if (label == 'Perfil') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ProfilePage(userId: 'ZlCxSGglhiEgvGfmdywp',)),
+            MaterialPageRoute(
+              builder: (context) => ProfilePage(userId: 'ZlCxSGglhiEgvGfmdywp'),
+            ),
           );
         }
       },
@@ -164,6 +209,34 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TipListScreen extends StatelessWidget {
+  final List<String> tips;
+
+  TipListScreen({required this.tips});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Lista de Tips'),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: ListView.builder(
+        itemCount: tips.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: Icon(Icons.lightbulb, color: Colors.blueAccent),
+            title: Text(
+              tips[index],
+              style: TextStyle(fontSize: 16),
+            ),
+          );
+        },
       ),
     );
   }

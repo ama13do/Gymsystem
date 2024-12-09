@@ -1,4 +1,4 @@
-/*mport 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gymsystem/views/auth/login.dart';
 import 'firebase_options.dart'; // Archivo generado automáticamente
@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
       home: LoginScreen(), // Pantalla de inicio
     );
   }
-}*/
-
+}
+/*
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -149,3 +149,4 @@ class CreateCollectionsScreen extends StatelessWidget {
   }
 }
 
+*/

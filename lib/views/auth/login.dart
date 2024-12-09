@@ -38,7 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text.trim(),
       );
 
-      // Si el inicio de sesión es exitoso, navega a la pantalla principal
+
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),

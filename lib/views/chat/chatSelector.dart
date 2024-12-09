@@ -28,9 +28,11 @@ class ChatSelectorScreen extends StatelessWidget {
                   onPressed: () {
                     // Navega a la pantalla de chat con IA
                     Navigator.push(
-  context,
-  MaterialPageRoute(builder: (context) => ChatWithCoachScreen()), // Para chat con IA
-);
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ChatWithIAScreen()), // Para chat con IA
+                    );
                   },
                 ),
                 SizedBox(height: 20),
@@ -41,9 +43,11 @@ class ChatSelectorScreen extends StatelessWidget {
                   label: 'Chat con Coach',
                   onPressed: () {
                     Navigator.push(
-  context,
-  MaterialPageRoute(builder: (context) => ChatWithCoachScreen()), // Para chat con Coach
-);
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ChatWithCoachScreen()), // Para chat con Coach
+                    );
                     // Navega a la pantalla de chat con Coach
                   },
                 ),
@@ -56,7 +60,9 @@ class ChatSelectorScreen extends StatelessWidget {
   }
 
   Widget _buildChatOption(BuildContext context,
-      {required IconData icon, required String label, required VoidCallback onPressed}) {
+      {required IconData icon,
+      required String label,
+      required VoidCallback onPressed}) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
